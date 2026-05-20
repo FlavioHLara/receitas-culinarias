@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: sistema_receitas
+      MYSQL_DATABASE: teste_receitas_rg_sistemas
     ports:
       - "3306:3306"
     volumes:
