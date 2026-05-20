@@ -1,2 +1,22 @@
-/.idea
-backend/node_modules
+.idea/
+.vscode/
+
+# Node
+node_modules/
+
+# Build
+dist/
+build/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
