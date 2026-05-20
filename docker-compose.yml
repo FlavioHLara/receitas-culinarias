@@ -10,7 +10,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./desafio/banco/script.sql:/docker-entrypoint-initdb.d/script.sql
+      - ./docker:/docker-entrypoint-initdb.d
 
 volumes:
   mysql_data:
