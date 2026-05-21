@@ -7,4 +7,5 @@ module.exports = {
     setupFiles: ['<rootDir>/src/tests/setup-env.ts'],
     clearMocks: true,
     verbose: true,
+    maxWorkers: 1,
 }
