@@ -1,0 +1,7 @@
+process.env.JWT_SECRET = 'teste-secret-nao-usar-em-prod'
+process.env.JWT_EXPIRES_IN = '1h'
+process.env.DB_HOST = process.env.DB_HOST ?? 'localhost'
+process.env.DB_PORT = process.env.DB_PORT ?? '3306'
+process.env.DB_USER = process.env.DB_USER ?? 'root'
+process.env.DB_PASSWORD = process.env.DB_PASSWORD ?? 'root'
+process.env.DB_NAME = process.env.DB_NAME ?? 'teste_receitas_rg_sistemas'
