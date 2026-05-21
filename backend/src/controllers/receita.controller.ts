@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 
-export async function listarRceitas(req: Request, res: Response, next: NextFunction) {
+export async function listarReceitas(req: Request, res: Response, next: NextFunction) {
     try {
 
     } catch (err) {
