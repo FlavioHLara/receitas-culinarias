@@ -19,3 +19,9 @@ export enum MensagensErro {
     INTERNO = 'Erro interno do servidor',
     USUARIO_NAO_RECUPERADO = 'Falha ao recuperar usuário recém criado',
 }
+
+export enum MensagensReceita {
+    NAO_ENCONTRADA = 'Receita não encontrada',
+    SEM_PERMISSAO = 'Você não tem permissão para acessar essa receita',
+    NADA_PARA_ATUALIZAR = 'Nenhum campo informado para atualização',
+}
