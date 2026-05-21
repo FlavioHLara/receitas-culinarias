@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { AppError } from '../errors/AppError';
+import { MensagensErro, MensagensValidacao } from '../constants/mensagens';
 
 export function errorHandler(
     err: Error,
@@ -10,7 +11,7 @@ export function errorHandler(
 ) {
     if (err instanceof ZodError) {
         return res.status(400).json({
-            erro: 'Dados inválidos',
+            erro: MensagensValidacao.DADOS_INVALIDOS,
             detalhes: err.issues.map((i) => ({
                 campo: i.path.join('.'),
                 mensagem: i.message,
@@ -23,5 +24,5 @@ export function errorHandler(
     }
 
     console.error('Erro não tratado:', err);
-    return res.status(500).json({ erro: 'Erro interno do servidor' });
+    return res.status(500).json({ erro: MensagensErro.INTERNO });
 }

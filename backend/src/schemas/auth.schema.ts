@@ -1,14 +1,15 @@
 import { z } from 'zod'
+import { MensagensValidacao } from '../constants/mensagens'
 
 export const criaUsuarioSchema = z.object({
     nome: z.string().min(1).optional(),
-    login: z.string().min(3, 'Login precisa ter no mínimo 3 caracteres'),
-    senha: z.string().min(6, 'Senha precisa ter no mínimo 6 caracteres'),
+    login: z.string().min(3, MensagensValidacao.LOGIN_MIN_CARACTERES),
+    senha: z.string().min(6, MensagensValidacao.SENHA_MIN_CARACTERES),
 })
 
 export const loginSchema = z.object({
-    login: z.string().min(1, 'Login é obrigatório'),
-    senha: z.string().min(1, 'Senha é obrigatória'),
+    login: z.string().min(1, MensagensValidacao.LOGIN_OBRIGATORIO),
+    senha: z.string().min(1, MensagensValidacao.SENHA_OBRIGATORIA),
 })
 
 export type CriarUsuarioInput = z.infer<typeof criaUsuarioSchema>
