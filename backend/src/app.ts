@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes';
+import receitaRoutes from "./routes/receita.routes";
 import { errorHandler } from './middlewares/errorHandler';
 
 const app = express();
@@ -12,6 +13,7 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 })
 app.use('/auth', authRoutes);
+app.use('/receita', receitaRoutes);
 app.use(errorHandler);
 
 export default app;
