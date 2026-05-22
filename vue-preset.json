@@ -1,0 +1,17 @@
+{
+  "useConfigFiles": true,
+  "vueVersion": "2",
+  "plugins": {
+    "@vue/cli-plugin-babel": { "version": "~5.0.0" },
+    "@vue/cli-plugin-typescript": {
+      "version": "~5.0.0",
+      "useTsWithBabel": true,
+      "classComponent": false
+    },
+    "@vue/cli-plugin-router": {
+      "version": "~5.0.0",
+      "historyMode": false
+    },
+    "@vue/cli-plugin-vuex": { "version": "~5.0.0" }
+  }
+}
