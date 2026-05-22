@@ -41,9 +41,9 @@ const routes: Array<RouteConfig> = [
     name: 'receita-detalhe',
     component: () => import('@/views/ReceitaDetalhe.vue'),
   },
-]
+];
 
-const router = new VueRouter({ routes })
+const router = new VueRouter({ routes });
 
 router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore();
@@ -57,6 +57,6 @@ router.beforeEach((to, _from, next) => {
   } else {
     next();
   }
-})
+});
 
 export default router;

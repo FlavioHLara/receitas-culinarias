@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import receitaRoutes from "./routes/receita.routes";
 import categoriaRoutes from './routes/categoria.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
-const app = express();
+const app: Application = express();
 
 app.use(cors());
 app.use(express.json());
