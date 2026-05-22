@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import Vue from 'vue';
+import VueRouter, { RouteConfig } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
@@ -46,17 +46,17 @@ const routes: Array<RouteConfig> = [
 const router = new VueRouter({ routes })
 
 router.beforeEach((to, _from, next) => {
-  const authStore = useAuthStore()
-  const estaLogado = authStore.estaLogado
-  const rotaPublica = to.meta?.publica
+  const authStore = useAuthStore();
+  const estaLogado = authStore.estaLogado;
+  const rotaPublica = to.meta?.publica;
 
   if (!rotaPublica && !estaLogado) {
-    next({ name: 'login' })
+    next({ name: 'login' });
   } else if (rotaPublica && estaLogado) {
-    next({ name: 'receitas' })
+    next({ name: 'receitas' });
   } else {
-    next()
+    next();
   }
 })
 
-export default router
+export default router;
