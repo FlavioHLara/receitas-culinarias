@@ -1,0 +1,411 @@
+openapi: 3.0.0
+
+info:
+  title: Receitas Culinárias API
+  version: 1.0.0
+  description: >
+    API REST para gerenciamento de receitas culinárias.
+    Autenticação via JWT — faça login em /auth/login, copie o token
+    e use no botão Authorize (canto superior direito).
+
+servers:
+  - url: http://localhost:3333
+    description: Desenvolvimento
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          nullable: true
+          example: Flávio
+        login:
+          type: string
+          example: flavio
+        criado_em:
+          type: string
+          format: date-time
+        alterado_em:
+          type: string
+          format: date-time
+
+    Receita:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        id_usuarios:
+          type: integer
+          example: 1
+        id_categorias:
+          type: integer
+          nullable: true
+          example: 1
+        nome:
+          type: string
+          nullable: true
+          example: Bolo de cenoura
+        tempo_preparo_minutos:
+          type: integer
+          nullable: true
+          example: 40
+        porcoes:
+          type: integer
+          nullable: true
+          example: 8
+        modo_preparo:
+          type: string
+          example: Misture os ingredientes e asse por 40 minutos.
+        ingredientes:
+          type: string
+          nullable: true
+          example: "Cenoura, farinha, ovos, açúcar"
+        categoria_nome:
+          type: string
+          nullable: true
+          example: Bolos e tortas doces
+        criado_em:
+          type: string
+          format: date-time
+        alterado_em:
+          type: string
+          format: date-time
+
+    Categoria:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: Bolos e tortas doces
+
+    Erro:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: Mensagem de erro
+
+    ErroValidacao:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: Dados inválidos
+        detalhes:
+          type: array
+          items:
+            type: object
+            properties:
+              campo:
+                type: string
+                example: senha
+              mensagem:
+                type: string
+                example: Senha precisa ter no mínimo 6 caracteres
+
+tags:
+  - name: Auth
+    description: Cadastro e autenticação de usuários
+  - name: Receitas
+    description: Gerenciamento de receitas do usuário autenticado
+  - name: Categorias
+    description: Categorias disponíveis para classificar receitas
+
+paths:
+  /auth/cria-usuario:
+    post:
+      tags: [Auth]
+      summary: Cadastra um novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [login, senha]
+              properties:
+                nome:
+                  type: string
+                  example: Flávio
+                login:
+                  type: string
+                  minLength: 3
+                  example: flavio
+                senha:
+                  type: string
+                  minLength: 6
+                  example: "123456"
+      responses:
+        "201":
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Usuario"
+        "400":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroValidacao"
+        "409":
+          description: Login já está em uso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Autentica o usuário e retorna o token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [login, senha]
+              properties:
+                login:
+                  type: string
+                  example: flavio
+                senha:
+                  type: string
+                  example: "123456"
+      responses:
+        "200":
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  usuario:
+                    $ref: "#/components/schemas/Usuario"
+        "401":
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Encerra a sessão do usuário
+      description: Endpoint stateless — o frontend descarta o token localmente.
+      responses:
+        "204":
+          description: Logout realizado com sucesso
+
+  /receita:
+    get:
+      tags: [Receitas]
+      summary: Lista as receitas do usuário logado
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: nome
+          schema:
+            type: string
+          description: Filtra por nome (busca parcial)
+          example: bolo
+        - in: query
+          name: id_categorias
+          schema:
+            type: integer
+          description: Filtra por categoria
+          example: 1
+      responses:
+        "200":
+          description: Lista de receitas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Receita"
+        "401":
+          description: Token não informado ou inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erro"
+
+    post:
+      tags: [Receitas]
+      summary: Cria uma nova receita
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [modo_preparo]
+              properties:
+                nome:
+                  type: string
+                  example: Bolo de cenoura
+                id_categorias:
+                  type: integer
+                  nullable: true
+                  example: 1
+                tempo_preparo_minutos:
+                  type: integer
+                  nullable: true
+                  example: 40
+                porcoes:
+                  type: integer
+                  nullable: true
+                  example: 8
+                modo_preparo:
+                  type: string
+                  example: Misture os ingredientes e asse por 40 minutos.
+                ingredientes:
+                  type: string
+                  nullable: true
+                  example: "Cenoura, farinha, ovos, açúcar"
+      responses:
+        "201":
+          description: Receita criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Receita"
+        "400":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroValidacao"
+        "401":
+          description: Não autenticado
+
+  /receita/{id}:
+    get:
+      tags: [Receitas]
+      summary: Busca uma receita pelo ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Receita encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Receita"
+        "403":
+          description: Sem permissão para acessar essa receita
+        "404":
+          description: Receita não encontrada
+
+    put:
+      tags: [Receitas]
+      summary: Atualiza uma receita existente
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                id_categorias:
+                  type: integer
+                  nullable: true
+                tempo_preparo_minutos:
+                  type: integer
+                  nullable: true
+                porcoes:
+                  type: integer
+                  nullable: true
+                modo_preparo:
+                  type: string
+                ingredientes:
+                  type: string
+                  nullable: true
+      responses:
+        "200":
+          description: Receita atualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Receita"
+        "403":
+          description: Sem permissão
+        "404":
+          description: Receita não encontrada
+
+    delete:
+      tags: [Receitas]
+      summary: Exclui uma receita
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "204":
+          description: Receita excluída com sucesso
+        "403":
+          description: Sem permissão
+        "404":
+          description: Receita não encontrada
+
+  /categoria:
+    get:
+      tags: [Categorias]
+      summary: Lista todas as categorias
+      description: Rota pública — não requer autenticação.
+      responses:
+        "200":
+          description: Lista de categorias
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Categoria"
